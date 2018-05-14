@@ -1,8 +1,6 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var util = require('util');
-var state = 'OFF';
 
 http.createServer(function (request, response) {
 	var filePath = '../..' + request.url;
