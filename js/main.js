@@ -6,38 +6,39 @@ $(document).ready(function() {
 	var removeArray = [];
 	var new_result = '';
 	var dict = new Object();
-	
+	var moviesArray = [];
+	swurl = 'https://swapi.co/api/films/';
+
+	$.ajax({
+		url: swurl,
+		dataType: "json",
+		type: 'GET',
+		success: function (data) {
+			var ret = data['results'];
+			new_result = ret.sort( sortBy("release_date") );
+			for(var i = 0; i < new_result.length; i++) {
+				var jsonData = {};
+				var obj = new_result[i];
+				jsonData['id'] = i;
+				jsonData['name'] = obj['title'];
+				moviesArray.push(jsonData);
+			}
+			
+		},
+		error: function (error) {
+			console.log('Error: ');
+		},
+	});
 	// displaying gilms on click of dropdown
 	$(document).on('click', '#swFilms', function() {
-		swurl = 'https://swapi.co/api/films/';
-		$.ajax({
-			url: swurl,
-			dataType: "json",
-			type: 'GET',
-			success: function (data) {
-				var ret = data['results'];
-				new_result = ret.sort( sortBy("release_date") );
-				var moviesArray = [];
-				for(var i = 0; i < new_result.length; i++) {
-					var jsonData = {};
-					var obj = new_result[i];
-					jsonData['id'] = i;
-					jsonData['name'] = obj['title'];
-					moviesArray.push(jsonData);
-				}
-				dropdown = $('.dropdown-menu');
-				dropdown.empty();
-				dropdown.prop('selectedIndex', 0);
-				var data = '';
-				$.each(moviesArray, function (key, entry) {
-					data += '<li class="dd_option" id=' + entry['id'] + '><a href="#">' + entry['name'] + '</a></li>';
-			  })
-				dropdown.append(data);
-			},
-			error: function (error) {
-				console.log('Error: ');
-			},
-		});
+		dropdown = $('.dropdown-menu');
+		dropdown.empty();
+		dropdown.prop('selectedIndex', 0);
+		var data = '';
+		$.each(moviesArray, function (key, entry) {
+			data += '<li class="dd_option" id=' + entry['id'] + '><a href="#">' + entry['name'] + '</a></li>';
+		})
+		dropdown.append(data);
 	});
 	
 	//displaying characters and spaceships on click of film name
